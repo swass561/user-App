@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit and Withdraw - Bank Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #5f6368;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success-message {
+            background-color: #e0f7e9;
+            color: #388e3c;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #d32f2f;
+        }
+
+        .tab-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #e8f0fe;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Deposit and Withdraw</h1>
+
+        <!-- Tab Navigation -->
+        <div class="tab-buttons">
+            <button class="tab-button active" id="deposit-tab" onclick="showTab('deposit')">Deposit</button>
+            <button class="tab-button" id="withdraw-tab" onclick="showTab('withdraw')">Withdraw</button>
+        </div>
+
+        <!-- Deposit Form -->
+        <div id="deposit" class="tab-content">
+            <h2>Deposit Money</h2>
+            <form id="deposit-form" onsubmit="deposit(event)">
+                <div class="form-group">
+                    <label for="deposit-account-number">Account Number:</label>
+                    <input type="text" id="deposit-account-number" required>
+                </div>
+                <div class="form-group">
+                    <label for="deposit-amount">Amount ($):</label>
+                    <input type="number" id="deposit-amount" min="0" required>
+                </div>
+                <button type="submit">Deposit</button>
+            </form>
+            <div id="deposit-message"></div>
+        </div>
+
+        <!-- Withdraw Form -->
+        <div id="withdraw" class="tab-content" style="display: none;">
+            <h2>Withdraw Money</h2>
+            <form id="withdraw-form" onsubmit="withdraw(event)">
+                <div class="form-group">
+                    <label for="withdraw-account-number">Account Number:</label>
+                    <input type="text" id="withdraw-account-number" required>
+                </div>
+                <div class="form-group">
+                    <label for="withdraw-amount">Amount ($):</label>
+                    <input type="number" id="withdraw-amount" min="0" required>
+                </div>
+                <button type="submit">Withdraw</button>
+            </form>
+            <div id="withdraw-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // Store accounts in localStorage
+        let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+
+        function showTab(tab) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show the selected tab
+            document.getElementById(tab).style.display = 'block';
+
+            // Add active class to selected tab button
+            if (tab === 'deposit') {
+                document.getElementById('deposit-tab').classList.add('active');
+                document.getElementById('withdraw-tab').classList.remove('active');
+            } else {
+                document.getElementById('withdraw-tab').classList.add('active');
+                document.getElementById('deposit-tab').classList.remove('active');
+            }
+        }
+
+        function deposit(event) {
+            event.preventDefault();
+            
+            const accountNumber = document.getElementById('deposit-account-number').value;
+            const amount = parseFloat(document.getElementById('deposit-amount').value);
+            
+            const account = accounts.find(acc => acc.accountNumber === accountNumber);
+            
+            if (account) {
+                account.balance += amount;
+                account.transactions.push({
+                    type: 'deposit',
+                    amount: amount,
+                    date: new Date().toISOString()
+                });
+
+                // Update localStorage with new account data
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+
+                document.getElementById('deposit-form').reset();
+                document.getElementById('deposit-message').innerHTML = 
+                    `<div class="message success-message">Deposit successful! New balance: $${account.balance}</div>`;
+            } else {
+                document.getElementById('deposit-message').innerHTML = 
+                    `<div class="message error-message">Account not found!</div>`;
+            }
+        }
+
+        function withdraw(event) {
+            event.preventDefault();
+            
+            const accountNumber = document.getElementById('withdraw-account-number').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            
+            const account = accounts.find(acc => acc.accountNumber === accountNumber);
+            
+            if (account) {
+                if (account.balance >= amount) {
+                    account.balance -= amount;
+                    account.transactions.push({
+                        type: 'withdrawal',
+                        amount: amount,
+                        date: new Date().toISOString()
+                    });
+
+                    // Update localStorage with new account data
+                    localStorage.setItem('accounts', JSON.stringify(accounts));
+
+                    document.getElementById('withdraw-form').reset();
+                    document.getElementById('withdraw-message').innerHTML = 
+                        `<div class="message success-message">Withdrawal successful! New balance: $${account.balance}</div>`;
+                } else {
+                    document.getElementById('withdraw-message').innerHTML = 
+                        `<div class="message error-message">Insufficient funds!</div>`;
+                }
+            } else {
+                document.getElementById('withdraw-message').innerHTML = 
+                    `<div class="message error-message">Account not found!</div>`;
+            }
+        }
+    </script>
+
+</body>
+</html>

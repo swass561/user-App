@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style-type: none;
+            gap: 15px;
+        }
+
+        .navbar ul li {
+            display: inline-block;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar ul li a:hover {
+            color: #ffcc00;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #1a73e8, #1557b0);
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .hero h2 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .hero button {
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            color: #1557b0;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .hero button:hover {
+            background-color: #e6b800;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .feature-card {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1a73e8;
+        }
+
+        .feature-card p {
+            color: #555;
+        }
+
+        .transaction-history {
+            padding: 20px;
+            background-color: #ffffff;
+            max-width: 1000px;
+            margin: 20px auto;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .transaction-history h3 {
+            font-size: 24px;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+
+        .transaction-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .transaction-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1a73e8;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>BankSys</h1>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#transaction-history">Transaction History</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero" id="home">
+        <h2>Welcome to BankSys</h2>
+        <p>Your trusted partner for modern and secure banking solutions. Manage your finances with ease and confidence.</p>
+        <button onclick="alert('Learn more clicked!')">Learn More</button>
+    </div>
+
+    <section class="features" id="features">
+        <div class="feature-card">
+            <h3>
+                <a href="account.html">Account details</a></h3>
+            
+            <p>Get the account details here.</p>
+
+        </div>
+        <div class="feature-card">
+            <h3>
+                <a href=B_d&w.html>Deposit & Withdraw</a></h3>
+            <p>Quickly deposit or withdraw money from your account anytime.</p>
+        </div>
+        <div class="feature-card">
+            <h3>
+                <a href="checkBalance.html">Check Balance</a></h3>
+            <p>Stay updated on your current balance with a single click.</p>
+        </div>
+       
+    </section>
+
+    <!-- Transaction History Section -->
+    <section class="transaction-history" id="transaction-history">
+        <h3>Transaction History</h3>
+        <ul class="transaction-list">
+            <li class="transaction-item">
+                <p><strong>Transaction ID:</strong> #TXN001</p>
+                <p><strong>Type:</strong> Deposit</p>
+                <p><strong>Amount:</strong> $500</p>
+                <p><strong>Date:</strong> 2024-12-07 10:00 AM</p>
+            </li>
+            <li class="transaction-item">
+                <p><strong>Transaction ID:</strong> #TXN002</p>
+                <p><strong>Type:</strong> Withdrawal</p>
+                <p><strong>Amount:</strong> $200</p>
+                <p><strong>Date:</strong> 2024-12-06 03:45 PM</p>
+            </li>
+            <li class="transaction-item">
+                <p><strong>Transaction ID:</strong> #TXN003</p>
+                <p><strong>Type:</strong> Deposit</p>
+                <p><strong>Amount:</strong> $1000</p>
+                <p><strong>Date:</strong> 2024-12-05 09:30 AM</p>
+            </li>
+        </ul>
+    </section>
+
+    <footer class="footer" id="contact">
+        <div class="feature-card">
+            <h3>24/7 Support</h3>
+            <p>Reach out to us anytime for personalized customer support.</p>
+        </div>
+        <p>&copy; 2024 BankSys. All rights reserved.</p>
+        <p>Email: support@banksys.com | Phone: +1 800 123 4567</p>
+    </footer>
+</body>
+</html>
