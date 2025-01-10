@@ -1,0 +1,71 @@
+public class CoreBankFeatures {
+    // Essential account management features
+    private static void accountManagement() {
+        // Account class definition
+        class Account {
+            private String accountNumber;
+            private String name;
+            private double balance;
+            private String email;
+            private String phone;
+
+            public Account(String accountNumber, String name, double initialDeposit, 
+                         String email, String phone) {
+                this.accountNumber = accountNumber;
+                this.name = name;
+                this.balance = initialDeposit;
+                this.email = email;
+                this.phone = phone;
+            }
+
+            public double getBalance() { return balance; }
+            public void deposit(double amount) { balance += amount; }
+            public boolean withdraw(double amount) {
+                if (amount <= balance) {
+                    balance -= amount;
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+
+    // Core database operations
+    private static void databaseOperations() {
+        // SQL queries for core operations
+        final String CREATE_ACCOUNT = """
+            INSERT INTO accounts (account_number, name, balance, email, phone)
+            VALUES (?, ?, ?, ?, ?)
+        """;
+        
+        final String UPDATE_BALANCE = """
+            UPDATE accounts 
+            SET balance = ? 
+            WHERE account_number = ?
+        """;
+        
+        final String GET_ACCOUNT = """
+            SELECT * FROM accounts 
+            WHERE account_number = ?
+        """;
+    }
+
+    // Core GUI components
+    private static void guiComponents() {
+        // Main form components
+        JTextField nameField = new JTextField(20);
+        JTextField balanceField = new JTextField(20);
+        JTextField emailField = new JTextField(20);
+        JTextField phoneField = new JTextField(20);
+        
+        // Transaction components
+        JTextField accountField = new JTextField(20);
+        JTextField amountField = new JTextField(20);
+        JRadioButton depositButton = new JRadioButton("Deposit");
+        JRadioButton withdrawButton = new JRadioButton("Withdraw");
+        
+        // Display components
+        JTable accountsTable = new JTable();
+        JTable transactionsTable = new JTable();
+    }
+}

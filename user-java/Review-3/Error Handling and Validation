@@ -1,0 +1,87 @@
+public class ErrorHandlingAndValidation {
+    // Input validation methods
+    public static void validateAccountInput(String name, String amount, 
+                                          String email, String phone) throws ValidationException {
+        // Name validation
+        if (name == null || name.trim().isEmpty()) {
+            throw new ValidationException("Name cannot be empty");
+        }
+        
+        // Amount validation
+        try {
+            double balance = Double.parseDouble(amount);
+            if (balance < 0) {
+                throw new ValidationException("Amount cannot be negative");
+            }
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Invalid amount format");
+        }
+        
+        // Email validation
+        if (email != null && !email.trim().isEmpty()) {
+            String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+            if (!Pattern.matches(emailRegex, email)) {
+                throw new ValidationException("Invalid email format");
+            }
+        }
+        
+        // Phone validation
+        if (phone != null && !phone.trim().isEmpty()) {
+            String phoneRegex = "^\\d{10}$";
+            if (!Pattern.matches(phoneRegex, phone)) {
+                throw new ValidationException("Phone must be 10 digits");
+            }
+        }
+    }
+
+    // Database error handling
+    public static void handleDatabaseOperation(Connection conn, 
+                                             DatabaseOperation operation) throws DatabaseException {
+        try {
+            operation.execute();
+        } catch (SQLException e) {
+            throw new DatabaseException("Database operation failed: " + e.getMessage());
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.err.println("Error closing connection: " + e.getMessage());
+            }
+        }
+    }
+
+    // Transaction error handling
+    public static void validateTransaction(String accountNumber, double amount, 
+                                         double currentBalance, String type) throws TransactionException {
+        if (accountNumber == null || accountNumber.trim().isEmpty()) {
+            throw new TransactionException("Account number is required");
+        }
+        
+        if (amount <= 0) {
+            throw new TransactionException("Amount must be positive");
+        }
+        
+        if (type.equals("withdraw") && amount > currentBalance) {
+            throw new TransactionException("Insufficient funds");
+        }
+    }
+
+    // Custom exceptions
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
+    }
+    
+    public static class DatabaseException extends Exception {
+        public DatabaseException(String message) {
+            super(message);
+        }
+    }
+    
+    public static class TransactionException extends Exception {
+        public TransactionException(String message) {
+            super(message);
+        }
+    }
+}

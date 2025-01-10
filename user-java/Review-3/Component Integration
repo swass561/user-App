@@ -1,0 +1,76 @@
+public class ComponentIntegration {
+    // Database connection manager
+    public class DatabaseManager {
+        private static final String DB_URL = "jdbc:mysql://localhost:3306/bank_db";
+        private static final String USER = "root";
+        private static final String PASS = "password";
+        
+        public static Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(DB_URL, USER, PASS);
+        }
+    }
+
+    // Model-View integration
+    public class AccountViewController {
+        private AccountModel model;
+        private AccountView view;
+        
+        public AccountViewController(AccountModel model, AccountView view) {
+            this.model = model;
+            this.view = view;
+            initializeController();
+        }
+        
+        private void initializeController() {
+            view.getCreateButton().addActionListener(e -> createAccount());
+            view.getTransactionButton().addActionListener(e -> processTransaction());
+            model.addDataChangeListener(e -> refreshView());
+        }
+        
+        private void refreshView() {
+            view.getAccountTable().setModel(model.getAccountTableModel());
+            view.getTransactionTable().setModel(model.getTransactionTableModel());
+        }
+    }
+
+    // Event handling integration
+    public class EventIntegration {
+        private void registerEventHandlers(JButton createButton, JButton transactButton) {
+            createButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        processAccountCreation();
+                    } catch (Exception ex) {
+                        handleError(ex);
+                    }
+                }
+            });
+            
+            transactButton.addActionListener(e -> {
+                try {
+                    processTransaction();
+                } catch (Exception ex) {
+                    handleError(ex);
+                }
+            });
+        }
+    }
+
+    // Database and GUI integration
+    public class DataViewIntegration {
+        private void updateViewFromDatabase() {
+            try (Connection conn = DatabaseManager.getConnection()) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM accounts");
+                
+                DefaultTableModel model = new DefaultTableModel();
+                // ... populate model from ResultSet
+                accountTable.setModel(model);
+                
+            } catch (SQLException e) {
+                handleDatabaseError(e);
+            }
+        }
+    }
+}

@@ -1,0 +1,84 @@
+public class EventHandlingSystem {
+    // Event listeners for account operations
+    public class AccountEventHandlers {
+        private void setupAccountListeners() {
+            // Create account button listener
+            createAccountButton.addActionListener(e -> {
+                try {
+                    String name = nameField.getText();
+                    String amount = amountField.getText();
+                    String email = emailField.getText();
+                    String phone = phoneField.getText();
+                    
+                    validateInput(name, amount, email, phone);
+                    createNewAccount(name, Double.parseDouble(amount), email, phone);
+                    clearForm();
+                    refreshDisplay();
+                    
+                } catch (Exception ex) {
+                    showError("Account Creation Error", ex.getMessage());
+                }
+            });
+        }
+    }
+
+    // Transaction event processing
+    public class TransactionEventHandlers {
+        private void setupTransactionListeners() {
+            // Transaction button listener
+            transactionButton.addActionListener(e -> {
+                try {
+                    String accountNumber = accountField.getText();
+                    double amount = Double.parseDouble(amountField.getText());
+                    String type = depositRadio.isSelected() ? "deposit" : "withdraw";
+                    
+                    processTransaction(accountNumber, amount, type);
+                    clearTransactionForm();
+                    refreshTransactionHistory();
+                    
+                } catch (Exception ex) {
+                    showError("Transaction Error", ex.getMessage());
+                }
+            });
+        }
+    }
+
+    // Table selection event handling
+    public class TableEventHandlers {
+        private void setupTableListeners() {
+            accountTable.getSelectionModel().addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    int row = accountTable.getSelectedRow();
+                    if (row != -1) {
+                        String accountNumber = (String) accountTable.getValueAt(row, 0);
+                        loadAccountDetails(accountNumber);
+                    }
+                }
+            });
+        }
+    }
+
+    // Window and component event handling
+    public class WindowEventHandlers {
+        private void setupWindowListeners() {
+            // Window closing event
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    closeAllConnections();
+                    dispose();
+                }
+            });
+            
+            // Tab change listener
+            tabbedPane.addChangeListener(e -> {
+                int selectedIndex = tabbedPane.getSelectedIndex();
+                if (selectedIndex == 0) {
+                    refreshAccountTable();
+                } else if (selectedIndex == 1) {
+                    refreshTransactionTable();
+                }
+            });
+        }
+    }
+}
