@@ -1,0 +1,100 @@
+public class BankDataValidator {
+    // Regular expressions for validation
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+    private static final String PHONE_REGEX = "^\\d{10}$";
+    private static final String NAME_REGEX = "^[a-zA-Z\\s]{2,50}$";
+    private static final String ACCOUNT_NUMBER_REGEX = "^[0-9]{10}$";
+    
+    // Custom exceptions for validation
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
+    }
+    
+    // Validate customer name
+    public static void validateName(String name) throws ValidationException {
+        if (name == null || name.trim().isEmpty()) {
+            throw new ValidationException("Name cannot be empty");
+        }
+        if (!name.matches(NAME_REGEX)) {
+            throw new ValidationException("Name must contain only letters and spaces (2-50 characters)");
+        }
+    }
+    
+    // Validate email address
+    public static void validateEmail(String email) throws ValidationException {
+        if (email != null && !email.trim().isEmpty()) {
+            if (!email.matches(EMAIL_REGEX)) {
+                throw new ValidationException("Invalid email format");
+            }
+        }
+    }
+    
+    // Validate phone number
+    public static void validatePhone(String phone) throws ValidationException {
+        if (phone != null && !phone.trim().isEmpty()) {
+            if (!phone.matches(PHONE_REGEX)) {
+                throw new ValidationException("Phone number must be 10 digits");
+            }
+        }
+    }
+    
+    // Validate account number
+    public static void validateAccountNumber(String accountNumber) throws ValidationException {
+        if (accountNumber == null || !accountNumber.matches(ACCOUNT_NUMBER_REGEX)) {
+            throw new ValidationException("Invalid account number format");
+        }
+    }
+    
+    // Validate transaction amount
+    public static void validateAmount(String amount) throws ValidationException {
+        try {
+            double value = Double.parseDouble(amount);
+            if (value <= 0) {
+                throw new ValidationException("Amount must be greater than zero");
+            }
+            if (value > 1000000) {
+                throw new ValidationException("Amount exceeds maximum transaction limit");
+            }
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Invalid amount format");
+        }
+    }
+    
+    // Validate balance for withdrawals
+    public static void validateWithdrawal(double balance, double amount) throws ValidationException {
+        if (amount > balance) {
+            throw new ValidationException("Insufficient funds");
+        }
+        if (balance - amount < 500) {
+            throw new ValidationException("Minimum balance of 500 must be maintained");
+        }
+    }
+    
+    // Comprehensive validation for new account creation
+    public static void validateNewAccount(String name, String initialDeposit, 
+                                        String email, String phone) throws ValidationException {
+        validateName(name);
+        validateAmount(initialDeposit);
+        validateEmail(email);
+        validatePhone(phone);
+        
+        // Validate minimum initial deposit
+        double amount = Double.parseDouble(initialDeposit);
+        if (amount < 1000) {
+            throw new ValidationException("Minimum initial deposit is 1000");
+        }
+    }
+    
+    // Validate transaction details
+    public static void validateTransaction(String accountNumber, String amount, 
+                                         String type) throws ValidationException {
+        validateAccountNumber(accountNumber);
+        validateAmount(amount);
+        
+        if (type == null || (!type.equals("deposit") && !type.equals("withdraw"))) {
+            throw new ValidationException("Invalid transaction type");
+        }
+    }
+}

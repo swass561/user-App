@@ -1,0 +1,101 @@
+// Using clean code principles and design patterns
+public class BankManagementSystem {
+    private final AccountService accountService;
+    private final TransactionService transactionService;
+    private final NotificationService notificationService;
+    
+    // Dependency injection through constructor
+    public BankManagementSystem(AccountService accountService, 
+                               TransactionService transactionService,
+                               NotificationService notificationService) {
+        this.accountService = accountService;
+        this.transactionService = transactionService;
+        this.notificationService = notificationService;
+    }
+    
+    // Innovative feature: Scheduled payments
+    public class ScheduledPaymentService {
+        private final Map<String, List<ScheduledPayment>> scheduledPayments = new HashMap<>();
+        
+        public void schedulePayment(String accountNumber, double amount, 
+                                  String recipient, LocalDateTime scheduleTime) {
+            ScheduledPayment payment = new ScheduledPayment(accountNumber, amount, 
+                                                          recipient, scheduleTime);
+            scheduledPayments.computeIfAbsent(accountNumber, k -> new ArrayList<>())
+                           .add(payment);
+        }
+        
+        public void processScheduledPayments() {
+            LocalDateTime now = LocalDateTime.now();
+            scheduledPayments.forEach((accountNumber, payments) -> {
+                payments.removeIf(payment -> {
+                    if (payment.getScheduleTime().isBefore(now)) {
+                        processPayment(payment);
+                        return true;
+                    }
+                    return false;
+                });
+            });
+        }
+    }
+    
+    // Innovative feature: Transaction analytics
+    public class TransactionAnalytics {
+        public Map<String, Double> getMonthlySpending(String accountNumber) {
+            List<Transaction> transactions = transactionService
+                .getTransactions(accountNumber);
+            
+            return transactions.stream()
+                .filter(t -> t.getType().equals("withdraw"))
+                .collect(Collectors.groupingBy(
+                    t -> t.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM")),
+                    Collectors.summingDouble(Transaction::getAmount)
+                ));
+        }
+        
+        public List<Category> getSpendingByCategory(String accountNumber) {
+            return transactionService.getTransactions(accountNumber).stream()
+                .collect(Collectors.groupingBy(
+                    Transaction::getCategory,
+                    Collectors.summingDouble(Transaction::getAmount)
+                ))
+                .entrySet().stream()
+                .map(e -> new Category(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+        }
+    }
+    
+    // Innovative feature: SMS/Email notifications
+    public class NotificationManager {
+        public void sendTransactionAlert(String accountNumber, 
+                                       Transaction transaction) {
+            Account account = accountService.getAccount(accountNumber);
+            String message = String.format(
+                "Transaction Alert: %s %.2f on account ending %s. Balance: %.2f",
+                transaction.getType(),
+                transaction.getAmount(),
+                accountNumber.substring(6),
+                account.getBalance()
+            );
+            
+            notificationService.sendSMS(account.getPhone(), message);
+            notificationService.sendEmail(account.getEmail(), "Transaction Alert", message);
+        }
+    }
+    
+    // Innovative feature: Account statement generation
+    public class StatementGenerator {
+        public byte[] generatePDFStatement(String accountNumber, 
+                                         LocalDate startDate,
+                                         LocalDate endDate) {
+            Account account = accountService.getAccount(accountNumber);
+            List<Transaction> transactions = transactionService
+                .getTransactionsBetweenDates(accountNumber, startDate, endDate);
+            
+            Document document = new Document();
+            // Generate PDF with transaction details
+            // ... PDF generation code ...
+            return document.toByteArray();
+        }
+    }
+}
